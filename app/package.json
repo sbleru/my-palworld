@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "my-palworld",
   "private": true,
   "scripts": {
     "build": "turbo build",
