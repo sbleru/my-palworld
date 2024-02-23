@@ -1,3 +1,14 @@
 {
-  "name": "discord-bot-api"
+  "name": "discord-bot-api",
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.8.1",
+    "hono": "^4.0.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
 }
