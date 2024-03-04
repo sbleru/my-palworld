@@ -1,3 +1,3 @@
-import { startServer } from "./endpoint";
+import { startServer } from "./endpoint/index.js";
 
 startServer();

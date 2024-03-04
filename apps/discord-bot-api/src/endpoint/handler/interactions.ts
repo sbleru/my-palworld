@@ -1,10 +1,10 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { Handler } from "hono";
-import { getInteractionMessageComponent } from "../../usecase/getInteractionMessageComponent.usecase";
-import { startServer } from "../../usecase/startServer.usecase";
-import { getServerInfo } from "../../usecase/getServerInfo.usecase";
-import { getStopServerModal } from "../../usecase/getStopServerModal.usecase";
-import { stopServer } from "../../usecase/stopServer.usecase";
+import { getInteractionMessageComponent } from "../../usecase/getInteractionMessageComponent.usecase.js";
+import { startServer } from "../../usecase/startServer.usecase.js";
+import { getServerInfo } from "../../usecase/getServerInfo.usecase.js";
+import { getStopServerModal } from "../../usecase/getStopServerModal.usecase.js";
+import { stopServer } from "../../usecase/stopServer.usecase.js";
 
 /**
  * @see https://discord.com/developers/docs/interactions/application-commands
