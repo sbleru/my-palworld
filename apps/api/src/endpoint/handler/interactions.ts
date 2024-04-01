@@ -1,9 +1,10 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { Handler } from "hono";
+
 import { getInteractionMessageComponent } from "../../usecase/getInteractionMessageComponent.usecase.js";
-import { startServer } from "../../usecase/startServer.usecase.js";
 import { getServerInfo } from "../../usecase/getServerInfo.usecase.js";
 import { getStopServerModal } from "../../usecase/getStopServerModal.usecase.js";
+import { startServer } from "../../usecase/startServer.usecase.js";
 import { stopServer } from "../../usecase/stopServer.usecase.js";
 
 /**
@@ -13,6 +14,7 @@ export const interactionsHandler: Handler = async (c) => {
   try {
     // Interaction type and data
     const json = await c.req.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { type, data } = json as any;
 
     /**

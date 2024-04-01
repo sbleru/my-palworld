@@ -1,5 +1,4 @@
 import {
-  ButtonStyleTypes,
   InteractionResponseType,
   MessageComponentTypes,
   TextStyleTypes,

@@ -1,7 +1,8 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { verifyDiscordRequest } from "./middleware/verifyDiscordRequest.js";
+
 import { interactionsHandler } from "./handler/interactions.js";
+import { verifyDiscordRequest } from "./middleware/verifyDiscordRequest.js";
 
 export const startServer = async () => {
   const app = new Hono();

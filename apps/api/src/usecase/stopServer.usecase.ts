@@ -2,7 +2,6 @@ import {
   ButtonStyleTypes,
   InteractionResponseType,
   MessageComponentTypes,
-  TextStyleTypes,
 } from "discord-interactions";
 import { Context } from "hono";
 
