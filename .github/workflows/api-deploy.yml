@@ -16,9 +16,9 @@ on:
       - main
     paths:
       - .github/workflows/api-deploy.yml
-      - "main/apps/api/**"
-      - "main/package-lock.json"
-      - "main/packages/**"
+      - "apps/api/**"
+      - "package-lock.json"
+      - "packages/**"
 
 env:
   API_NAME: prod-api
