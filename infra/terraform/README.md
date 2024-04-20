@@ -8,8 +8,12 @@ Build a dedicated server on Google Cloud using Terraform.
 
 - Create Google Cloud Project
   - https://console.cloud.google.com/projectcreate
-- Enable compute engine
-  - `gcloud services enable compute.googleapis.com`
+- Enable google APIs
+  ```
+  gcloud services enable compute.googleapis.com
+  gcloud services enable secretmanager.googleapis.com
+  gcloud services enable run.googleapis.com
+  ```
 
 ### Set envs
 
@@ -52,8 +56,11 @@ terraform apply -var-file terraform.tfvars
 ### Access to server
 
 1. Access the created Google Cloud GCE and check the 'External IP'.
-  - https://console.cloud.google.com/compute/instances
-  - e.g. 34.123.123.123
+
+- https://console.cloud.google.com/compute/instances
+- e.g. 34.123.123.123
+
 2. Launch Palworld and join from the dedicated server.
-  - Check the box for password input, enter '<address confirmed in step 1>:8211', and connect.
-  - e.g.「34.123.123.123:8211」
+
+- Check the box for password input, enter '<address confirmed in step 1>:8211', and connect.
+- e.g.「34.123.123.123:8211」
