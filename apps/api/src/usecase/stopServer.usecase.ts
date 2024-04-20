@@ -5,21 +5,25 @@ import {
 } from "discord-interactions";
 import { Context } from "hono";
 
+import { GceInstanceClientInterface } from "../model/client/gceInstance";
+
 type Deps = {
   c: Context;
+  gceInstanceClient: GceInstanceClientInterface;
 };
 
 /**
  * Stop server
  */
 export const stopServer =
-  ({ c }: Deps) =>
-  () => {
+  ({ c, gceInstanceClient }: Deps) =>
+  async () => {
+    await gceInstanceClient.stop();
     return c.json({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         // Fetches a random emoji to send from a helper function
-        content: "Palworld server: ",
+        content: "Palworld server is stopping.",
         components: [
           {
             type: 1,
@@ -29,12 +33,6 @@ export const stopServer =
                 label: "Get server info",
                 style: ButtonStyleTypes.PRIMARY,
                 custom_id: "get_server_info",
-              },
-              {
-                type: MessageComponentTypes.BUTTON,
-                label: "Stop Server",
-                style: ButtonStyleTypes.DANGER,
-                custom_id: "get_stop_server_modal",
               },
             ],
           },

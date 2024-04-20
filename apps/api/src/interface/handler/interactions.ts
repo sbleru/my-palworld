@@ -1,6 +1,7 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { Handler } from "hono";
 
+import { getGceInstanceClient } from "../../infra/client/gceInstance.js";
 import { getInteractionMessageComponent } from "../../usecase/getInteractionMessageComponent.usecase.js";
 import { getServerInfo } from "../../usecase/getServerInfo.usecase.js";
 import { getStopServerModal } from "../../usecase/getStopServerModal.usecase.js";
@@ -16,6 +17,7 @@ export const interactionsHandler: Handler = async (c) => {
     const json = await c.req.json();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { type, data } = json as any;
+    const gceInstanceClient = getGceInstanceClient();
 
     /**
      * Handle verification requests
@@ -45,10 +47,10 @@ export const interactionsHandler: Handler = async (c) => {
       const { custom_id } = data;
       switch (custom_id) {
         case "start_server": {
-          return startServer({ c })();
+          return startServer({ c, gceInstanceClient })();
         }
         case "get_server_info": {
-          return getServerInfo({ c })();
+          return getServerInfo({ c, gceInstanceClient })();
         }
         case "get_stop_server_modal": {
           return getStopServerModal({ c })();
@@ -65,7 +67,7 @@ export const interactionsHandler: Handler = async (c) => {
       const { custom_id } = data;
       switch (custom_id) {
         case "stop_server": {
-          return stopServer({ c })();
+          return stopServer({ c, gceInstanceClient })();
         }
         default:
           break;

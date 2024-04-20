@@ -5,21 +5,25 @@ import {
 } from "discord-interactions";
 import { Context } from "hono";
 
+import { GceInstanceClientInterface } from "../model/client/gceInstance";
+
 type Deps = {
   c: Context;
+  gceInstanceClient: GceInstanceClientInterface;
 };
 
 /**
  * Start server
  */
 export const startServer =
-  ({ c }: Deps) =>
-  () => {
+  ({ c, gceInstanceClient }: Deps) =>
+  async () => {
+    await gceInstanceClient.start();
     return c.json({
       type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         // Fetches a random emoji to send from a helper function
-        content: "Palworld server: ",
+        content: "Palworld server started",
         components: [
           {
             type: 1,
