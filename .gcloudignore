@@ -1,0 +1,4 @@
+# Dockerfileで .gitignore をCOPYするため、明示的に.gcloudignoreファイルを用意する
+# .gcloudignore がないと、gcloud submits などで、.gitignoreはアップロードされない
+# gitignore しているものをignoreする
+#!include:.gitignore
