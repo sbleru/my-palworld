@@ -5,7 +5,7 @@ export async function DiscordRequest(
   options: {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body: any;
-  }
+  },
 ) {
   // append endpoint to root API URL
   const url = "https://discord.com/api/v10/" + endpoint;
@@ -36,7 +36,7 @@ export async function DiscordRequest(
  */
 export async function InstallGlobalCommands(
   appId: string,
-  commands: CreateGlobalApplicationCommand[]
+  commands: CreateGlobalApplicationCommand[],
 ) {
   // API endpoint to overwrite global commands
   const endpoint = `applications/${appId}/commands`;

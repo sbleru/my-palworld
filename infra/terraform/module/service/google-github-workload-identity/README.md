@@ -26,19 +26,19 @@ module "google_github_workload_identity" {
 
 ## Variables
 
-| Name                    | Description          | Type           | Default                                                                                                                          | Required |
-|-------------------------|----------------------|----------------|----------------------------------------------------------------------------------------------------------------------------------|:--------:|
-| `prefix`                | リソース名のプレフィックス        | `string`       | "dev"                                                                                                                            |    no    |
-| `project_id`            | Google CloudプロジェクトID | `string`       | "bls-boost"                                                                                                                      |    no    |
-| `github_repos`          | アクセスを許可するGitHubリポジトリ | `list(string)` | n/a                                                                                                                              |   yes    |
-| `service_account_name`  | サービスアカウント名           | `string`       | "github"                                                                                                                         |    no    |
+| Name                    | Description                           | Type           | Default                                                                                                                          | Required |
+| ----------------------- | ------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------- | :------: |
+| `prefix`                | リソース名のプレフィックス            | `string`       | "dev"                                                                                                                            |    no    |
+| `project_id`            | Google CloudプロジェクトID            | `string`       | "bls-boost"                                                                                                                      |    no    |
+| `github_repos`          | アクセスを許可するGitHubリポジトリ    | `list(string)` | n/a                                                                                                                              |   yes    |
+| `service_account_name`  | サービスアカウント名                  | `string`       | "github"                                                                                                                         |    no    |
 | `service_account_roles` | サービスアカウントに付与するIAMロール | `list(string)` | ["roles/viewer", "roles/cloudbuild.builds.editor", "roles/storage.admin", "roles/run.developer", "roles/iam.serviceAccountUser"] |    no    |
 
 ## Outputs
 
-| Name                         | Description       |
-|------------------------------|-------------------|
-| `service_account_account_id` | サービスアカウントの一意のID   |
+| Name                         | Description                        |
+| ---------------------------- | ---------------------------------- |
+| `service_account_account_id` | サービスアカウントの一意のID       |
 | `service_account_email`      | サービスアカウントのメールアドレス |
 
 ## Requirements
