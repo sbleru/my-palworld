@@ -20,6 +20,10 @@ on:
       - "main/package-lock.json"
       - "main/packages/**"
 
+env:
+  API_NAME: prod-api
+  PROJECT_ID: boreal-atom-412606
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -47,4 +51,4 @@ jobs:
 
       - name: Update API service
         run: |
-          gcloud run services update dev-api --image gcr.io/boreal-atom-412606/api:latest --region asia-northeast1
+          gcloud run services update $API_NAME --image gcr.io/$PROJECT_ID/api:latest --region asia-northeast1
