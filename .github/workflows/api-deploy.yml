@@ -1,0 +1,49 @@
+name: API Deploy
+run-name: "API Deploy [${{github.ref_name}} to ${{inputs.dest}}]"
+
+on:
+  workflow_dispatch:
+    inputs:
+      dest:
+        description: "デプロイ先の環境"
+        required: true
+        default: "prod"
+        type: choice
+        options:
+          - prod
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/api-deploy.yml
+      - "main/apps/api/**"
+      - "main/package-lock.json"
+      - "main/packages/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    environment: "prod"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v2"
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      # cloudbuild.yamlでCloud Runのデプロイを行なわない
+      # workload_identityのサービスアカウントでデプロイ関連の権限をまとめたかったため。
+      #   cloudbuild.yamlでデプロイを行うには、cloudbuild自体にデプロイの権限付与が必要
+      - name: Build image
+        # buildの詳細はcloudbuild.yaml
+        run: |
+          gcloud builds submit --config tooling/docker/api/cloudbuild.yaml --substitutions=_TAG="latest"
+
+      - name: Update API service
+        run: |
+          gcloud run services update dev-api --image gcr.io/boreal-atom-412606/api:latest --region asia-northeast1

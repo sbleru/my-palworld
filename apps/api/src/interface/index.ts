@@ -8,7 +8,7 @@ export const startServer = async () => {
   const app = new Hono();
 
   app.get("/", (c) => {
-    return c.text("Hello Hono!");
+    return c.text("Hello Hono!!");
   });
 
   app.post("/interactions", verifyDiscordRequest, interactionsHandler);
