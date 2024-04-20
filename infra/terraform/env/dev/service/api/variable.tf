@@ -1,29 +1,35 @@
 variable "prefix" {
-  type    = string
-  default = "dev"
+  description = "prefix"
+  type        = string
+  default     = "prod"
 }
 
 variable "primary_region" {
-  type    = string
-  default = "asia-northeast1"
+  description = "region"
+  type        = string
+  default     = "asia-northeast1"
 }
 
 variable "project_id" {
-  type    = string
-  default = "boreal-atom-412606"
+  description = "project id"
+  type        = string
+  default     = "boreal-atom-412606"
 }
 
-variable "app_id" {
-  type      = string
-  sensitive = true
+variable "discord_app_id" {
+  description = "discord app id"
+  type        = string
+  sensitive   = true
 }
 
 variable "discord_token" {
-  type      = string
-  sensitive = true
+  description = "discord token"
+  type        = string
+  sensitive   = true
 }
 
 variable "discord_public_key" {
-  type      = string
-  sensitive = true
+  description = "discord public key"
+  type        = string
+  sensitive   = true
 }

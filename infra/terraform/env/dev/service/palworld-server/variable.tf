@@ -1,36 +1,39 @@
-variable "prefix" {
-  type    = string
-  default = "dev"
-}
 
 variable "primary_region" {
-  type    = string
-  default = "asia-northeast1"
+  description = "region"
+  type        = string
+  default     = "asia-northeast1"
 }
 
 variable "project_id" {
-  type    = string
+  description = "project id"
+  type        = string
 }
 
 variable "server_password" {
-  type = string
+  description = "server password"
+  type        = string
 }
 
 variable "admin_password" {
-  type = string
+  description = "admin password"
+  type        = string
 }
 
 variable "palworld_server_name" {
-  type = string
-  default = "palworld-server"
+  description = "server name"
+  type        = string
+  default     = "palworld-server"
 }
 
 variable "palworld_server_description" {
-  type    = string
-  default = ""
+  description = "Server description"
+  type        = string
+  default     = ""
 }
 
 variable "palworld_server_tz" {
-  type    = string
-  default = "JST"
+  description = "Server timezone"
+  type        = string
+  default     = "JST"
 }

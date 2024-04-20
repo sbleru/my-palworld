@@ -1,5 +1,5 @@
 name: API Deploy
-run-name: "API Deploy [${{github.ref_name}} to ${{inputs.dest}}]"
+run-name: "API Deploy [${{github.ref_name}}] to prod"
 
 on:
   workflow_dispatch:
@@ -26,6 +26,7 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
+    # prodしかないので
     environment: "prod"
     steps:
       - uses: actions/checkout@v4

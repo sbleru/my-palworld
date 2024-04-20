@@ -11,8 +11,6 @@ module "palworld_server" {
 
   machine_type = "e2-standard-4"
 
-  device_name = "instance-1"
-
   startup_script = templatefile("${path.module}/startup.sh", {
     server_name        = var.palworld_server_name
     server_description = var.palworld_server_description

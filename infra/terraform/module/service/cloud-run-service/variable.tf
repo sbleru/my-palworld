@@ -1,21 +1,26 @@
 variable "primary_region" {
-  type = string
+  description = "region"
+  type        = string
 }
 
 variable "project_id" {
-  type = string
+  description = "project id"
+  type        = string
 }
 
 variable "web_api_name" {
-  type = string
+  description = "Cloud Run service name"
+  type        = string
 }
 
 variable "service_account_name" {
-  type = string
+  description = "service account name"
+  type        = string
 }
 
 variable "image" {
-  type = string
+  description = "Docker image"
+  type        = string
 }
 
 variable "envs" {
@@ -44,23 +49,27 @@ variable "env_secrets" {
 }
 
 variable "cpu" {
-  type    = string
-  default = "1000m"
+  description = "CPU"
+  type        = string
+  default     = "1000m"
 }
 
 variable "memory" {
-  type    = string
-  default = "512Mi"
+  description = "Memory"
+  type        = string
+  default     = "512Mi"
 }
 
 variable "max_scale" {
-  type    = string
-  default = "100"
+  description = "最大スケール数"
+  type        = string
+  default     = "100"
 }
 
 variable "cpu_boost" {
-  type    = string
-  default = "true"
+  description = "CPU boost"
+  type        = string
+  default     = "true"
 }
 
 variable "db_connection_name" {

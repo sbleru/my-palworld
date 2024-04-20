@@ -1,7 +1,3 @@
-locals {
-
-}
-
 resource "google_cloud_run_service" "api" {
 
   project = var.project_id
@@ -25,8 +21,8 @@ resource "google_cloud_run_service" "api" {
         }
 
         dynamic "env" {
-          // can't iterate over sensitive variables in dynamic blocks.
-          // https://developer.hashicorp.com/terraform/language/functions/nonsensitive
+          # can't iterate over sensitive variables in dynamic blocks.
+          # https://developer.hashicorp.com/terraform/language/functions/nonsensitive
           for_each = nonsensitive(var.env_secrets)
 
           content {
@@ -76,7 +72,11 @@ resource "google_cloud_run_service" "api" {
     ]
   }
 
-  depends_on = [google_secret_manager_secret_iam_member.api]
+  # 本来はterraformが依存関係を自動で解決してくれるはずだが、明示的に依存関係を定義しないとapplyできなかったため定義。
+  depends_on = [
+    google_secret_manager_secret_iam_member.api,
+    google_secret_manager_secret_version.secret_version
+  ]
 }
 
 data "google_iam_policy" "noauth" {

@@ -15,10 +15,10 @@ module "api" {
 
   env_secrets = [
     {
-      name         = "APP_ID"
+      name         = "DISCORD_APP_ID"
       key          = "latest"
-      secret       = "APP_ID"
-      secret_value = var.app_id
+      secret       = "DISCORD_APP_ID"
+      secret_value = var.discord_app_id
     },
     {
       name         = "DISCORD_TOKEN"
