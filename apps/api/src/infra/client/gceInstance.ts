@@ -1,6 +1,6 @@
 import { InstancesClient } from "@google-cloud/compute";
 
-import { GceInstanceClientInterface } from "../../model/client/gceInstance";
+import { GceInstanceClientInterface } from "../../model/client/gceInstance.js";
 
 const instanceClient = ({
   client,

@@ -5,7 +5,7 @@ import {
 } from "discord-interactions";
 import { Context } from "hono";
 
-import { GceInstanceClientInterface } from "../model/client/gceInstance";
+import { GceInstanceClientInterface } from "../model/client/gceInstance.js";
 
 type Deps = {
   c: Context;
