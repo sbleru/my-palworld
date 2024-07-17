@@ -1,0 +1,94 @@
+# Dockerfileのlint設定
+name: Lint Dockerfile
+
+on:
+  # PRベースの変更に追従する
+  push:
+    branches: [main, develop]
+    paths:
+      - "**/Dockerfile"
+  pull_request:
+    paths:
+      - "**/Dockerfile"
+
+jobs:
+  find_changed_dockerfiles:
+    name: Find Changed Dockerfiles
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfile_list: ${{ steps.set-dockerfiles.outputs.dockerfiles }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Find Dockerfiles
+        id: set-dockerfiles
+        # git管理下のDockerfileを取得
+        run: |
+          # github.sha は、マージ後にそうなるであろうコードのコミット
+          echo "github.sha: ${{ github.sha }}"
+          # ベースブランチの最新のコミットを指す
+          echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
+
+          # PRのベースブランチを取得
+          BASE_BRANCH=${{ github.base_ref }}
+
+          # 変更されたDockerfileを検出し、JSON配列に変換
+          DOCKERFILES=$(
+            git diff --name-only --diff-filter=ACMRT origin/${{ github.event.pull_request.base.ref }}..${{ github.sha }} \
+              | grep Dockerfile \
+              | jq -R -s -c 'split("\n")[:-1]'
+          )
+
+          # 結果が空の場合は空の配列を設定
+          if [ "$DOCKERFILES" = "[]" ]; then
+            echo "No Dockerfiles changed in this PR"
+            echo "dockerfiles=[]" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfiles=$DOCKERFILES" >> $GITHUB_OUTPUT
+          fi
+
+  lint_dockerfiles:
+    needs: find_changed_dockerfiles
+    name: Lint Changed Dockerfiles
+    runs-on: ubuntu-latest
+    if: ${{ needs.find_changed_dockerfiles.outputs.dockerfile_list != '[]' }}
+    strategy:
+      matrix:
+        dockerfile: ${{ fromJson(needs.find_changed_dockerfiles.outputs.dockerfile_list) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Hadolint
+        id: hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.dockerfile }}
+        continue-on-error: true
+
+      - name: Comment Lint Result to PR
+        uses: actions/github-script@v6
+        if: always()
+        env:
+          DOCKERFILE_PATH: ${{ matrix.dockerfile }}
+          HADOLINT_OUTCOME: ${{ steps.hadolint.outcome }}
+          HADOLINT_OUTPUT: ${{ steps.hadolint.outputs.stdout }}
+        with:
+          script: |
+            const output = `
+            ### Hadolint results for \`${process.env.DOCKERFILE_PATH}\`
+
+            #### Status: \`${process.env.HADOLINT_OUTCOME}\`
+
+            \`\`\`
+            ${process.env.HADOLINT_OUTPUT || 'No issues found'}
+            \`\`\`
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
