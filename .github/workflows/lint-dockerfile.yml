@@ -19,7 +19,9 @@ jobs:
       dockerfile_list: ${{ steps.set-dockerfiles.outputs.dockerfiles }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 全履歴をフェッチ
 
       - name: Find Dockerfiles
         id: set-dockerfiles
@@ -35,7 +37,7 @@ jobs:
 
           # 変更されたDockerfileを検出し、JSON配列に変換
           DOCKERFILES=$(
-            git diff --name-only --diff-filter=ACMRT origin/${{ github.event.pull_request.base.ref }}..${{ github.sha }} \
+            git diff --name-only --diff-filter=ACMRT origin/${{ github.event.pull_request.base.ref }}...${{ github.sha }} \
               | grep Dockerfile \
               | jq -R -s -c 'split("\n")[:-1]'
           )
