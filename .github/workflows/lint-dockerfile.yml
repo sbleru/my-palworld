@@ -67,39 +67,27 @@ jobs:
 
       - name: Run Hadolint
         id: hadolint
-        uses: hadolint/hadolint-action@master
+        # https://github.com/hadolint/hadolint-action
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ${{ matrix.dockerfile }}
           # Error レベルのみCIで落とす
           failure-threshold: error
+          # Error 判定する場合は定義する
           # override-error: DL3016,DL3018
 
-      # - name: Update Pull Request
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{secrets.GITHUB_TOKEN}}
-      #     script: |
-      #       const output = `
-      #       #### Hadolint: \`${{ steps.hadolint.outcome }}\`
-      #       \`\`\`
-      #       ${process.env.HADOLINT_RESULTS}
-      #       \`\`\`
-      #       `;
-
-      #       github.rest.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: output
-      #       })
-
+      # warning 以下の結果をPRにコメントする。errorの場合はCIがこける。
       - name: Update Pull Request
         uses: actions/github-script@v7
+        env:
+          DOCKERFILE_PATH: ${{ matrix.dockerfile }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const commentMarker = '<!-- HADOLINT-COMMENT -->'
             const output = `${commentMarker}
+            ### Hadolint results (warning or less) for \`${process.env.DOCKERFILE_PATH}\`
+
             #### Hadolint: \`${{ steps.hadolint.outcome }}\`
             \`\`\`
             ${process.env.HADOLINT_RESULTS}
