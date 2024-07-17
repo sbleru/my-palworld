@@ -60,14 +60,15 @@ jobs:
         dockerfile: ${{ fromJson(needs.find_changed_dockerfiles.outputs.dockerfile_list) }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run Hadolint
         id: hadolint
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@master
         with:
           dockerfile: ${{ matrix.dockerfile }}
-        continue-on-error: true
+          # Error レベルのみCIで落とす
+          failure-threshold: error
 
       - name: Comment Lint Result to PR
         uses: actions/github-script@v6
