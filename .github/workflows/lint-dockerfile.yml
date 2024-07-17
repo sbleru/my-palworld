@@ -53,6 +53,9 @@ jobs:
   lint_dockerfiles:
     needs: find_changed_dockerfiles
     name: Lint Changed Dockerfiles
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: ${{ needs.find_changed_dockerfiles.outputs.dockerfile_list != '[]' }}
     strategy:
@@ -69,29 +72,64 @@ jobs:
           dockerfile: ${{ matrix.dockerfile }}
           # Error レベルのみCIで落とす
           failure-threshold: error
+          # override-error: DL3016,DL3018
 
-      - name: Comment Lint Result to PR
-        uses: actions/github-script@v6
-        if: always()
-        env:
-          DOCKERFILE_PATH: ${{ matrix.dockerfile }}
-          HADOLINT_OUTCOME: ${{ steps.hadolint.outcome }}
-          HADOLINT_OUTPUT: ${{ steps.hadolint.outputs.stdout }}
+      # - name: Update Pull Request
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{secrets.GITHUB_TOKEN}}
+      #     script: |
+      #       const output = `
+      #       #### Hadolint: \`${{ steps.hadolint.outcome }}\`
+      #       \`\`\`
+      #       ${process.env.HADOLINT_RESULTS}
+      #       \`\`\`
+      #       `;
+
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: output
+      #       })
+
+      - name: Update Pull Request
+        uses: actions/github-script@v7
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const output = `
-            ### Hadolint results for \`${process.env.DOCKERFILE_PATH}\`
-
-            #### Status: \`${process.env.HADOLINT_OUTCOME}\`
-
+            const commentMarker = '<!-- HADOLINT-COMMENT -->'
+            const output = `${commentMarker}
+            #### Hadolint: \`${{ steps.hadolint.outcome }}\`
             \`\`\`
-            ${process.env.HADOLINT_OUTPUT || 'No issues found'}
+            ${process.env.HADOLINT_RESULTS}
             \`\`\`
             `;
 
-            github.rest.issues.createComment({
+            // PRの全コメントを取得
+            const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
+              repo: context.repo.repo
+            });
+
+            // マーカーを持つコメントを探す
+            const botComment = comments.find(comment => comment.body.includes(commentMarker));
+
+            if (botComment) {
+              // 既存のコメントを更新
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              });
+            } else {
+              // 新しいコメントを作成
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              });
+            }
