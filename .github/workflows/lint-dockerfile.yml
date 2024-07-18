@@ -50,12 +50,17 @@ jobs:
             echo "dockerfiles=$DOCKERFILES" >> $GITHUB_OUTPUT
           fi
 
+  # hadolint
+  # https://github.com/hadolint/hadolint-action
   lint_dockerfiles:
     needs: find_changed_dockerfiles
     name: Lint Changed Dockerfiles
     permissions:
+      # PR, Issueへのコメント権限
       issues: write
       pull-requests: write
+      # checkout権限を付与する
+      contents: "read"
     runs-on: ubuntu-latest
     if: ${{ needs.find_changed_dockerfiles.outputs.dockerfile_list != '[]' }}
     strategy:
@@ -76,22 +81,30 @@ jobs:
           # Error 判定する場合は定義する
           # override-error: DL3016,DL3018
 
-      # warning 以下の結果をPRにコメントする。errorの場合はCIがこける。
+      # warning以下の結果をPRにコメントする。errorの場合はCIがこける。
       - name: Update Pull Request
         uses: actions/github-script@v7
         env:
           DOCKERFILE_PATH: ${{ matrix.dockerfile }}
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const commentMarker = '<!-- HADOLINT-COMMENT -->'
-            const output = `${commentMarker}
-            ### Hadolint results (warning or less) for \`${process.env.DOCKERFILE_PATH}\`
+            const matrixIdentifier = process.env.DOCKERFILE_PATH
+            const commentMarker = `<!-- HADOLINT-COMMENT-${matrixIdentifier} -->`
 
-            #### Hadolint: \`${{ steps.hadolint.outcome }}\`
+            let hadolintContent = '';
+            if (process.env.HADOLINT_RESULTS) {
+              hadolintContent = `
+            #### Hadolint warnings for ${matrixIdentifier}: \`${{ steps.hadolint.outcome }}\`
             \`\`\`
             ${process.env.HADOLINT_RESULTS}
             \`\`\`
+            `;
+            } else {
+              hadolintContent = `#### Hadolint warnings for ${matrixIdentifier}: No results to display`;
+            }
+
+            const output = `${commentMarker}
+            ${hadolintContent}
             `;
 
             // PRの全コメントを取得
@@ -101,7 +114,7 @@ jobs:
               repo: context.repo.repo
             });
 
-            // マーカーを持つコメントを探す
+            // 特定のmatrixに対応するマーカーを持つコメントを探す
             const botComment = comments.find(comment => comment.body.includes(commentMarker));
 
             if (botComment) {
