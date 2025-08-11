@@ -20,7 +20,7 @@ Build a dedicated server on Google Cloud using Terraform.
 Create a file named terraform.tfvars and set environments
 
 ```sh
-touch ./infra/terraform/env/dev/service/palworld-server/terraform.tfvars
+touch ./infra/terraform/env/prod/service/palworld-server/terraform.tfvars
 ```
 
 ```tfvars terraform.tfvars
@@ -44,10 +44,10 @@ gcloud config set project <your google cloud project id>
 gcloud auth application-default login
 
 # Make bucket to manage terraform state
-gsutil mb gs://dev-my-palworld-tfstate
+gsutil mb gs://my-palworld-tfstate
 
 # terraform
-cd ./infra/terraform/env/dev/service/palworld-server
+cd ./infra/terraform/env/prod/service/palworld-server
 terraform init
 terraform plan -var-file terraform.tfvars
 terraform apply -var-file terraform.tfvars
