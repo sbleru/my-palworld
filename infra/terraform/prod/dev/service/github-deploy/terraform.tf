@@ -9,7 +9,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "dev-my-palworld-tfstate"
+    bucket = "my-palworld-tfstate"
     prefix = "v1/service/github-deploy"
   }
 }
